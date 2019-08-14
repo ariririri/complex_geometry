@@ -1,0 +1,234 @@
+%===============
+%一行目に必ず必要
+%文章の形式を定義
+%===============
+\documentclass[dvipdfmx]{jarticle}
+%===============
+%パッケージの定義、必要か不明
+%===============
+%この下4つを加えることで、mathbbが機能した
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+%可換図式用パッケージ
+\usepackage{amscd}
+\usepackage[all]{xy}
+\usepackage{tikz-cd}
+%リンク用パッケージ
+\usepackage[]{hyperref}
+%\usepackage[dvipdfmx]{}
+\usepackage[]{graphicx}
+%複数行コメント
+%\usepackage{comment}
+
+\usepackage{my-default}
+%タイトルデータ
+\title{Information Geometry}
+\author{Somoneelse}
+\date{\today}
+
+%===============
+%定理環境の設定
+%セクション毎
+%===============
+
+
+\begin{document}
+
+% タイトルを出力
+\maketitle
+% 目次の表示
+\tableofcontents
+
+\maketitle
+\part{Differential Geometry}
+最初に情報幾何で使われる微分幾何的な道具について説明する.
+
+\section{manifold}
+ここでは多様体の定義を説明し,球面が多様体であることをみる.
+多様体は曲面の一般化であり,曲面や他の空間でユークリッド空間同様の微積分を展開する.
+
+\begin{screen}
+\begin{dfn}
+位相空間$M$とその開被覆$\{U_i\}$と$\phi_i:U_i \to \mathbb{R}^n$の組$(M, \{U_i, \phi_i\})$が
+以下を満たす時$C^{\infty}$級多様体であるという.
+\begin{itemize}
+  \item $M$がハウスドルフである.
+  \item $\phi_i(U_i)$が$\mathbb{R}^n$上開集合であり,$\phi_i$が中への同相である.
+  \item $U_i \cap U_j \neq \emptyset$の時,$\phi_i \circ \phi_j^{-1}: \phi_j(U_i \cap U_j) \to \phi_i(U_i \cap U_j)$は$C^{\infty}$級となる.
+\end{itemize}
+\end{dfn}
+\end{screen}
+
+球面が多様体であることを示す.
+
+\begin{epl}
+  球面$S^n$は多様体となる.
+\end{epl}
+\begin{proof}
+開被覆とその開被覆から$\mathbb{R}^n$への写像を定義する.
+$U_n^+ := \{(x_1,\dots,x_n) \mid x_n \neq 1 \}$,$U_n^- := \{(x_1,\dots,x_n) \mid x_n \neq -1 \}$とし,
+\begin{alignat}{3}
+\phi_n^+: & U_n^+ \to \mathbb{R}^{n-1} \\
+          & (x_1,\dots,x_n)  \mapsto \frac{1}{1 - x_n}(x_1, \ldots , x_{n-1})
+\end{alignat}
+\begin{alignat}{3}
+\phi_n^-: & U_n^- \to \mathbb{R}^{n-1} \\
+          & (x_1,\dots,x_n)  \mapsto \frac{1}{1 + x_n}(x_1, \ldots , x_{n-1})
+\end{alignat}
+とすると,これはら$\mathbb{R}^{n-1}$と同相である. 逆も計算すれば求まる.
+実際,これらは$(0, \ldots, \pm 1)$からの射影であることにはなっている.
+また多様体の間の変換も$\frac{1 + x_n}{1 - x_n}$倍するだけなので明らかに微分可能であることがわかる.
+\end{proof}
+
+\begin{exs}
+射影空間が多様体であることを示せ.
+\end{exs}
+
+\section{$C^{\infty}$級写像と接ベクトル空間}
+\subsection{$C^{\infty}$級写像}
+多様体からの写像が$C^{\infty}$級は前のところからの写像として定義される.
+\begin{screen}
+\begin{dfn}
+多様体$(M, \{U_i, \phi_i\}$からの写像$f:M \to \mathbb{R}^m$が$C^{\infty}$級とは
+$\forall p \in M$で$p \in U_i$となる$U_i$に対し,$f \circ \phi_i: \phi_i^{-1}(U_i) \to \mathbb{R}^m$が$C^{\infty}$級であること.
+\end{dfn}
+\end{screen}
+
+\subsection{局所的な微分の成分表示}
+開集合$U, (x_1,\dots,x_n)$を固定した場合,多様体から$\mathbb{R}$への写像$f$の方向微分$\frac{\partial f}{\partial x_i}$が定義できる.
+
+\subsection{曲線に沿う微分}
+$c: (- \epsilon , \epsilon) \to U(c(0)=p)$と$f:U \to \mathbb{R}$を使い曲線に沿う微分を定義する.
+それはただの一次元の微分の定義で求められる.
+これは多様体上動く曲線の速度ベクトルのようなもの.
+ただし,速度の場合は局所座標系のとり方によるため,それによらないような定義とした.
+
+これから$f$に対し,その$p$での$c$に沿った微分を与える写像$v_c(f)$が定義できる.
+これらには以下の性質が成り立つ.
+\begin{itemize}
+  \item $f,g$が局所的に等しければ,$\partial f = \partial g$.
+  \item $v_c(af + bg)= av_c(f) + bv_c(g)$.
+  \item $v_c(fg) = f(p)v_c(g) + g(p)v_c(f)$.
+\end{itemize}
+
+上の条件を満たす写像全体を$D_p$とかく.
+これは$\mathbb{R}$ベクトル空間になる.
+またこの中には微分$f$に対し,$\frac{\partial f}{\partial x_i}|_p$を対応させる写像もある.
+これは方向微分としては$c: \alpha  \mapsto (x_1, \ldots, x_i + \alpha, \ldots, x_n)$になる.
+$\frac{\partial f}{\partial x_i}|_p$で生成されるベクトル空間を$T_p$とかく.
+これは$C^{\infty}$級多様体だけを考えている場合は一致することが知られている.
+これを接ベクトル空間という.
+
+\section{ベクトル場とベクトルバンドル}
+ベクトル場とベクトルバンドルを定義し,ベクトル場がベクトルバンドルのセクションになっていることを見る.
+さらにベクトル場に関する最低限の演算を定義する.
+
+\begin{screen}
+\begin{dfn}
+$M$を多様体とし,$X:M \to \cup T_p(M)$で
+$\forall p in M$に対し$X_p = \sum a_i(p) \frac{\partial}{\partial x_i}$とかけ,
+$a_i$が$C^{\infty}$級写像となる時$X$を\textbf{ベクトル場}という.
+\end{dfn}
+\end{screen}
+
+$f:M \to \mathbb{R}$に対し,$X(f)$を
+
+\section{リーマン計量と接続}
+リーマン計量について述べる.
+$g_p: T_pM \times T_pM \to \mathbb{R}$に内積が与えられているとする.
+さらにこれが$p$に対して$C^{\infty}$級である時リーマン計量という.
+
+\begin{thm}
+任意の多様体にリーマン計量は存在する
+\end{thm}
+
+
+接続はベクトル場をベクトル場で微分する操作である.
+接続であり、計量との相性を保つものをLevi-Chiveta接続という.
+
+\part{Information Geometry}
+\section{Introduction}
+情報幾何の入門を概説する.
+この本の貢献は情報幾何の設定を数学的に定式化したことである.
+設定を具体的に説明する.
+\begin{align*}
+p: M \to P(\Omega)
+\end{align*}
+である.ここで$M$はパラメータ空間,$P(\Omega)$は確率測度全体である.
+$P(\Omega)$は無限次元になることもあるが,$p(M),M$は有限次元の可微分多様体になっている.
+この設定において,Fisher Metricを定義しCremel-Raoの不等式が成り立つことを示した.
+統計では確率分布を似ているもので近似することはよくあるので,それに相当する概念として
+$\kappal \Omega \to \Omega'$が\textbf{統計的}であることを定義した
+(一般に?)Fisher Metric$g_m(V, V) \ge g'_m(V, V)$が成り立つ.
+さらに統計的な場合においてFisher MetricやAmari-Chentsovが不変量であることも示した.
+
+
+
+\subsection{A Brief Synopsis}
+最初に記号を定義する.
+$\Omega$を可測空間とし,$P(\Omega)$を$\Omega$上の確率測度全体のなす集合とする.
+また,$M(\Omega)$を非負の測度全体のなす集合とし,$S(\Omega)$を負も含めた有限測度全体のなす集合とする.
+$M$をパラメータのなす空間とし,$p:M \to P(\Omega)$を適当な写像とする.
+
+情報幾何ではこれらに適切な幾何構造を加えて、幾何的に空間を調べる.
+典型的には,$P(\Omega)$に多様体としての構造をいれ,そこにFisher計量をいれたリーマン多様体を考える.
+これが実際にどういう時に多様体になるかはここでは触れない.
+
+
+\subsection{An Informal Description}
+$I=\{1, \ldots, n\}$とする.これを前のsectionの$\Omega$として扱う.
+可測集合は$I$上の冪集合とする.
+この時,$I$上の非負測度全体は$\{(m_1, \ldots, m_n) \in \mathbb{R_{\ge 0}}^n \mid \sum m_i > 0\}$となる.
+(非負測度という言葉は誤解を招くかもしれない.全体で正である必要はある.)
+確率測度全体$P(I)=\{(p_1, \ldots, p_n) \mid  \forall p_i \ge 0, \sum_i p_i = 1\}$となる.
+
+この時$P(I)$はn-1次元単体$\Sigma^{n-1}:=\{(y_1, \ldots, y_n)\mid \sum y_j = 1\}$と同一視できる.
+これは$S^{n-1}_{+}=\{(q_1, \ldots, q_n) \mid q_i \ge 0, \sum q_i^2 = 1\}$とも同相であるが,微分同相ではない.
+
+\section{Finite Information Geometry}
+\subsection{Manifolds of Finite Measures}
+$I$を空でない有限集合とし,位数を$n$とする.
+$\mathcal{F}(I):=\{f:I \to \mathbb{R}\}$とする.
+$\mathcal{F}(I)$は$\mathbb{R}$ベクトル空間になる.
+その基底として,$e_i(j) = \left\{
+\begin{array}{ll}
+1 & i = j \\
+0 & otherwise
+\end{array}
+\right.$
+が取れる.
+実際$f = \sum_{i=1}^n f^i e_i(f^i \in \mathbb{R})$とかける.
+さらに,線形写像$\sigma: \mathcal{F}(I) \to \mathbb{R}$は
+$(I, P(I))$の測度$\mu$を以下で与える.
+$\mu(J) := \sum_{j \in J} \sigma(e_j)$
+逆に$(I, P(I))$上の測度$\mu$は$\sigma(e_j) = \mu(\{j\})$で定めればよい.
+$\sigma$全体を$S(I)$で表す.$S(I)$は$n$次元ベクトル空間であり,自然に多様体の構造が入る.
+以下で他の記号を定義する.
+
+\begin{align*}
+\delta^i(e_j) = \left\{
+\begin{array}{ll}
+1 & i = j \\
+0 & otherwise
+\end{array}
+\right. \\
+S_a(I):= & \{\sum \mu_i \delta^i \mid \sum \mu_i = a\} \\
+M(I):= & \{\sum \mu_i \delta^i \mid \mu_i \ge 0\} \\
+M_{+}(I):= & \{\sum \mu_i \delta^i \mid \mu_i > 0\} \\
+P(I):= & \{\sum \mu_i \delta^i \mid \sum \mu_i = 1, \mu_i \ge 0\} \\
+P_{+}(I):= & \{\sum \mu_i \delta^i \mid \sum \mu_i = 1, \mu_i > 0\}
+\end{align*}
+
+真面目に証明するのは面倒なので,やらないがこれはら標準的なユークリッド位相により多様体と思える.
+
+\subsubsection{Tanget and Cotanget Bundles}
+$\mu \in S(I)$での$S(I)$上の接ベクトル空間$T_{\mu}S(I)$は$S(I)$と同型となる.
+$n-1$次元閉部分多様体の場合は$S_0(I)$と同型の接ベクトル空間になる.
+
+\subsection{Fisher Metric}
+$\langle f, g \rangle_{\mu} = \mu(f \cdot g)$で内積を定義する.
+これから$\mathcal{F}(I) \to S(I), f \mapsto \langle f, \cdot \rangle_{\mu}$となる.
+
+\end{document}
